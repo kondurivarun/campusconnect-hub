@@ -5,8 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Edit, Trash2, GraduationCap, MessageSquare } from "lucide-react";
+import { Plus, Edit, Trash2, GraduationCap, MessageSquare, Users, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,6 +84,49 @@ const Admin = () => {
     enabled: !!session && userRole === "admin",
   });
 
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, email, full_name");
+      
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("user_id, role");
+
+      return profiles?.map(profile => ({
+        ...profile,
+        role: roles?.find(r => r.user_id === profile.id)?.role || "student"
+      }));
+    },
+    enabled: !!session && userRole === "admin",
+  });
+
+  const updateRoleMutation = useMutation({
+    mutationFn: async ({ userId, newRole }: { userId: string; newRole: "admin" | "student" }) => {
+      const { error } = await supabase
+        .from("user_roles")
+        .update({ role: newRole })
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast({
+        title: "Role updated",
+        description: "User role has been successfully updated.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("colleges").delete().eq("id", id);
@@ -141,26 +186,55 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-primary text-white">
-            <CardHeader>
-              <CardTitle className="text-white">Quick Actions</CardTitle>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button asChild variant="secondary" className="w-full">
-                <Link to="/admin/add-college">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add College
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" className="w-full">
-                <Link to="/admin/feedback">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  View Feedback
-                </Link>
-              </Button>
+            <CardContent>
+              <div className="text-2xl font-bold">{users?.length || 0}</div>
             </CardContent>
           </Card>
         </div>
+
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              User Management
+            </CardTitle>
+            <CardDescription>Manage user roles and permissions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {users?.map((user) => (
+                <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium">{user.email}</p>
+                    {user.full_name && <p className="text-sm text-muted-foreground">{user.full_name}</p>}
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Badge variant={user.role === "admin" ? "default" : "secondary"}>
+                      {user.role}
+                    </Badge>
+                    <Select
+                      value={user.role}
+                      onValueChange={(value) => updateRoleMutation.mutate({ userId: user.id, newRole: value as "admin" | "student" })}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
