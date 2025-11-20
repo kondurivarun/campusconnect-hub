@@ -75,10 +75,7 @@ const Navbar = () => {
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link to="/login">Sign In</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/signup">Sign Up</Link>
+                <Link to="/login">Admin Sign In</Link>
               </Button>
             </>
           )}

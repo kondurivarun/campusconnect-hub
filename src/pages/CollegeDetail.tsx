@@ -19,6 +19,7 @@ import {
   Map,
   ArrowLeft,
   Maximize2,
+  Pencil,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -34,6 +35,28 @@ const CollegeDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedSection, setSelectedSection] = useState<{ title: string; content: string; icon: React.ReactNode } | null>(null);
+
+  const { data: session } = useQuery({
+    queryKey: ["session"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
+      return data.session;
+    },
+  });
+
+  const { data: userRole } = useQuery({
+    queryKey: ["userRole", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .single();
+      return data?.role;
+    },
+    enabled: !!session?.user?.id,
+  });
 
   const { data: college, isLoading } = useQuery({
     queryKey: ["college", id],
@@ -89,10 +112,18 @@ const CollegeDetail = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container py-8 max-w-5xl">
-        <Button variant="ghost" onClick={() => navigate("/")} className="mb-6">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Colleges
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button variant="ghost" onClick={() => navigate("/")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Colleges
+          </Button>
+          {userRole === "admin" && (
+            <Button onClick={() => navigate(`/admin/college/edit/${id}`)}>
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit College
+            </Button>
+          )}
+        </div>
 
         {college.image_url && (
           <div className="h-96 rounded-xl overflow-hidden mb-8 shadow-elevated">

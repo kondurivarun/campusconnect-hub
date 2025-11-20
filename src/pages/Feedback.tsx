@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,13 +15,24 @@ const Feedback = () => {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
 
-  const { data: session } = useQuery({
+  const { data: session, isLoading } = useQuery({
     queryKey: ["session"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
       return data.session;
     },
   });
+
+  useEffect(() => {
+    if (!isLoading && !session) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to submit feedback.",
+        variant: "destructive",
+      });
+      navigate("/login");
+    }
+  }, [session, isLoading, navigate, toast]);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
