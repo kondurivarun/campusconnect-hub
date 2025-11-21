@@ -238,8 +238,18 @@ const Admin = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Manage Colleges</CardTitle>
-            <CardDescription>Add, edit, or remove college information</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Manage Colleges</CardTitle>
+                <CardDescription>Add, edit, or remove college information</CardDescription>
+              </div>
+              <Button asChild>
+                <Link to="/admin/add-college">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add New College
+                </Link>
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
