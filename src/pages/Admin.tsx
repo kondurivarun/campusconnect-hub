@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Edit, Trash2, GraduationCap, MessageSquare, Users, Shield } from "lucide-react";
+import { Plus, Edit, Trash2, GraduationCap, MessageSquare, Users, Shield, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -160,9 +160,19 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage colleges and view feedback</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Home
+                </Link>
+              </Button>
+            </div>
+            <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Manage colleges and view feedback</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
