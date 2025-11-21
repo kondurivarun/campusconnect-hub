@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -15,20 +15,6 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [districtFilter, setDistrictFilter] = useState<string>("all");
 
-  const { data: session, isLoading: sessionLoading } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      const { data } = await supabase.auth.getSession();
-      return data.session;
-    },
-  });
-
-  useEffect(() => {
-    if (!sessionLoading && !session) {
-      navigate("/login");
-    }
-  }, [session, sessionLoading, navigate]);
-
   const { data: colleges, isLoading } = useQuery({
     queryKey: ["colleges"],
     queryFn: async () => {
@@ -40,7 +26,6 @@ const Home = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!session,
   });
 
   const districts = Array.from(new Set(colleges?.map((c) => c.district) || []));
@@ -55,10 +40,6 @@ const Home = () => {
 
     return matchesSearch && matchesDistrict;
   });
-
-  if (sessionLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
 
   return (
     <div className="min-h-screen bg-background">

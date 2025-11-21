@@ -23,8 +23,10 @@ const AddEditCollege = () => {
     district: "",
     courses: "",
     facilities: "",
+    facilities_image_url: "",
     placements: "",
     hostel_facilities: "",
+    hostel_facilities_image_url: "",
     sports_achievements: "",
     faculty_details: "",
     contact: "",
@@ -54,8 +56,10 @@ const AddEditCollege = () => {
         district: college.district || "",
         courses: college.courses || "",
         facilities: college.facilities || "",
+        facilities_image_url: college.facilities_image_url || "",
         placements: college.placements || "",
         hostel_facilities: college.hostel_facilities || "",
+        hostel_facilities_image_url: college.hostel_facilities_image_url || "",
         sports_achievements: college.sports_achievements || "",
         faculty_details: college.faculty_details || "",
         contact: college.contact || "",
@@ -172,6 +176,18 @@ const AddEditCollege = () => {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="facilities_image_url">Facilities Image URL</Label>
+                <Input
+                  id="facilities_image_url"
+                  name="facilities_image_url"
+                  type="url"
+                  placeholder="https://example.com/facilities.jpg"
+                  value={formData.facilities_image_url}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="placements">Placements</Label>
                 <Textarea
                   id="placements"
@@ -190,6 +206,18 @@ const AddEditCollege = () => {
                   value={formData.hostel_facilities}
                   onChange={handleChange}
                   rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="hostel_facilities_image_url">Hostel Facilities Image URL</Label>
+                <Input
+                  id="hostel_facilities_image_url"
+                  name="hostel_facilities_image_url"
+                  type="url"
+                  placeholder="https://example.com/hostel.jpg"
+                  value={formData.hostel_facilities_image_url}
+                  onChange={handleChange}
                 />
               </div>
 
