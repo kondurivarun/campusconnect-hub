@@ -21,8 +21,10 @@ export type Database = {
           created_at: string | null
           district: string
           facilities: string | null
+          facilities_image_url: string | null
           faculty_details: string | null
           hostel_facilities: string | null
+          hostel_facilities_image_url: string | null
           id: string
           image_url: string | null
           map_link: string | null
@@ -38,8 +40,10 @@ export type Database = {
           created_at?: string | null
           district: string
           facilities?: string | null
+          facilities_image_url?: string | null
           faculty_details?: string | null
           hostel_facilities?: string | null
+          hostel_facilities_image_url?: string | null
           id?: string
           image_url?: string | null
           map_link?: string | null
@@ -55,8 +59,10 @@ export type Database = {
           created_at?: string | null
           district?: string
           facilities?: string | null
+          facilities_image_url?: string | null
           faculty_details?: string | null
           hostel_facilities?: string | null
+          hostel_facilities_image_url?: string | null
           id?: string
           image_url?: string | null
           map_link?: string | null

@@ -337,7 +337,25 @@ const CollegeDetail = () => {
                 Detailed information about {selectedSection?.title?.toLowerCase()}
               </DialogDescription>
             </DialogHeader>
-            <div className="mt-4">
+            <div className="mt-4 space-y-4">
+              {(selectedSection?.title === "Facilities" && college.facilities_image_url) && (
+                <div className="rounded-lg overflow-hidden">
+                  <img
+                    src={college.facilities_image_url}
+                    alt="Facilities"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              )}
+              {(selectedSection?.title === "Hostel Facilities" && college.hostel_facilities_image_url) && (
+                <div className="rounded-lg overflow-hidden">
+                  <img
+                    src={college.hostel_facilities_image_url}
+                    alt="Hostel Facilities"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              )}
               <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                 {selectedSection?.content}
               </p>
