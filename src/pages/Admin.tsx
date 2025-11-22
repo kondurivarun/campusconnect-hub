@@ -34,7 +34,7 @@ const Admin = () => {
     },
   });
 
-  const { data: userRole } = useQuery({
+  const { data: userRole, isLoading: roleLoading } = useQuery({
     queryKey: ["userRole", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
@@ -49,15 +49,17 @@ const Admin = () => {
   });
 
   useEffect(() => {
-    if (!sessionLoading && (!session || userRole === "student")) {
-      navigate("/");
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive",
-      });
+    if (!sessionLoading && !roleLoading) {
+      if (!session || userRole !== "admin") {
+        navigate("/");
+        toast({
+          title: "Access Denied",
+          description: "Only admin users can access this page.",
+          variant: "destructive",
+        });
+      }
     }
-  }, [session, sessionLoading, userRole, navigate, toast]);
+  }, [session, sessionLoading, userRole, roleLoading, navigate, toast]);
 
   const { data: colleges } = useQuery({
     queryKey: ["colleges"],
@@ -148,7 +150,7 @@ const Admin = () => {
     },
   });
 
-  if (sessionLoading || !userRole) {
+  if (sessionLoading || roleLoading || !userRole) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
