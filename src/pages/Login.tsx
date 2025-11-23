@@ -101,9 +101,12 @@ const Login = () => {
               type="button" 
               variant="outline" 
               className="w-full"
-              onClick={() => navigate("/")}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/", { replace: true });
+              }}
             >
-              Continue as Student
+              Browse Colleges (No Login Required)
             </Button>
             <div className="text-center text-sm">
               <span className="text-muted-foreground">Admin account? Sign in above. </span>
